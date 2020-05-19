@@ -31,6 +31,7 @@
 #include	"config.h"
 #endif
 
+#include        <stdarg.h>
 #include	<stdio.h>
 #include	<stdlib.h>
 #include	<string.h>
@@ -504,6 +505,23 @@ keystruct	*name_to_key(tabstruct *tab, char *keyname)
 
   return i<0? NULL:key;
   }
+
+keystruct *multi_name_to_key(tabstruct *tab, ...) {
+  keystruct *key;
+  char *keyname;
+  va_list args;
+  va_start(args, tab);
+
+  for (keyname = va_arg(args, char*); keyname != NULL; keyname = va_arg(args, char*)) {
+    key = name_to_key(tab, keyname);
+    if (key) {
+      return key;
+    }
+  }
+
+  va_end(args);
+  return NULL;
+}
 
 /****** keys_list **************************************************************
 PROTO	char **keys_list(catstruct *tab, int *n)

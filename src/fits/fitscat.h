@@ -210,7 +210,8 @@ extern tabstruct	*asc2bin_tab(catstruct *catin, char *tabinname,
 extern keystruct	*name_to_key(tabstruct *tab, char *keyname),
 			*new_key(char *keyname),
 			*pos_to_key(tabstruct *tab, int pos),
-			*read_key(tabstruct *tab, char *keyname);
+			*read_key(tabstruct *tab, char *keyname),
+                        *multi_name_to_key(tabstruct *tab, ...);
 
 extern void	add_cleanupfilename(char *filename),
 		cleanup_files(void),

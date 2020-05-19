@@ -70,8 +70,13 @@ setstruct *load_samples(char **filename, int catindex, int ncat, int ext,
    catstruct		*cat;
    tabstruct		*tab;
    keystruct		*fkey, *key;
-   char			keynames[][32]={"ELONGATION", "FLAGS", "FLUX_RADIUS",
-				"SNR_WIN", ""};
+   // SExtractor2, SourceXtractor++ (lowercase)
+   char			keynames[][32]={
+                                "ELONGATION", "elongation",
+                                "FLAGS", "source_flags",
+                                "FLUX_RADIUS", "flux_radius",
+				"SNR_WIN", "snrratio",
+				""};
    char			str[MAXCHAR];
    char			**pkeynames,
 			*head;
@@ -148,7 +153,7 @@ setstruct *load_samples(char **filename, int catindex, int ncat, int ext,
 
           read_keys(tab, pkeynames, NULL, nkeys, NULL);
 
-          if ((key = name_to_key(tab, "ELONGATION")))
+          if ((key = multi_name_to_key(tab, "ELONGATION", "elongation", NULL)))
             elong = (float *)key->ptr;
           else
             {
@@ -156,7 +161,7 @@ setstruct *load_samples(char **filename, int catindex, int ncat, int ext,
 			filename[icat]);
             elong = NULL;
             }
-          if ((key = name_to_key(tab, "FLAGS")))
+          if ((key = multi_name_to_key(tab, "FLAGS", "source_flags", NULL)))
             flags = (unsigned short *)key->ptr;
           else
             {
@@ -171,14 +176,14 @@ setstruct *load_samples(char **filename, int catindex, int ncat, int ext,
             imaflags = (unsigned int *)key->ptr;
           else
             imaflags = NULL;
-          if (!(key = name_to_key(tab, "FLUX_RADIUS")))
+          if (!(key = multi_name_to_key(tab, "FLUX_RADIUS", "flux_radius", NULL)))
               {
-              sprintf(str, "FLUS_RADIUS not found in catalog %s",
+              sprintf(str, "FLUX_RADIUS not found in catalog %s",
 			filename[icat]);
               error(EXIT_FAILURE, "*Error*: ", str);
               }
           hl = (float *)key->ptr;
-          if (!(key = name_to_key(tab, "SNR_WIN")))
+          if (!(key = multi_name_to_key(tab, "SNR_WIN", "snrratio", NULL)))
               {
               sprintf(str, "SNR_WIN not found in catalog %s",
 			filename[icat]);
@@ -537,7 +542,7 @@ setstruct *read_samples(setstruct *set, char *filename,
   else
     sym = (short *)key->ptr;
 
-  if (!(key = name_to_key(keytab, "FLUX_RADIUS")))
+  if (!(key = multi_name_to_key(keytab, "FLUX_RADIUS", "flux_radius", NULL)))
     error(EXIT_FAILURE, "*Error*: FLUX_RADIUS parameter not found in catalog ",
 		filename);
   fluxrad = (float *)key->ptr;
@@ -564,20 +569,20 @@ setstruct *read_samples(setstruct *set, char *filename,
       }
     }
 
-  if (!(key = name_to_key(keytab, "SNR_WIN")))
+  if (!(key = multi_name_to_key(keytab, "SNR_WIN", "snrratio", NULL)))
     {
     sprintf(str, "*Error*: SNR_WIN parameter not found in catalogue ");
     error(EXIT_FAILURE, str, filename);
     }
   snr = (float *)key->ptr;
 
-  if ((key = name_to_key(keytab, "ELONGATION")))
+  if ((key = multi_name_to_key(keytab, "ELONGATION", "elongation", NULL)))
     elong = (float *)key->ptr;
   else
     elong = NULL;
 
 /* Load optional SExtractor FLAGS parameter */
-  if ((key = name_to_key(keytab, "FLAGS")))
+  if ((key = multi_name_to_key(keytab, "FLAGS", "source_flags", NULL)))
     flags = (unsigned short *)key->ptr;
   else
     flags = NULL;
@@ -595,7 +600,7 @@ setstruct *read_samples(setstruct *set, char *filename,
     imaflags = NULL;
 
 /* Load SExtractor VIGNET vector */
-  if (!(key = name_to_key(keytab, "VIGNET")))
+  if (!(key = multi_name_to_key(keytab, "VIGNET", "vignet", NULL)))
     error(EXIT_FAILURE,
 	"*Error*: VIGNET parameter not found in catalog ", filename);
   vignet = (float *)key->ptr;
