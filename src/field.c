@@ -114,7 +114,7 @@ fieldstruct	*field_init(char *catname)
       free(imatab->headbuf);
       imatab->headnblock = 1 + (key->nbytes-1)/FBSIZE;
       QCALLOC(imatab->headbuf, char, imatab->headnblock*FBSIZE);
-      memcpy(imatab->headbuf, key->ptr, key->nbytes);
+      memcpy(imatab->headbuf, key->ptr, key->nbytes * key->nobj);
       imatab->cat = cat;
       readbasic_head(imatab);
       field->wcs[next++] = read_wcs(imatab);
