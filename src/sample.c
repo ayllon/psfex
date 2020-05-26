@@ -472,8 +472,7 @@ setstruct *read_samples(setstruct *set, char *filename,
   tab = cat->tab;
   for (j=cat->ntab; j--; tab=tab->nexttab)
     if (!(ldflag = strcmp("LDAC_IMHEAD",tab->extname))
-	  || fitsread(head=tab->headbuf,"SEXBKDEV",&backnoise,H_FLOAT,T_FLOAT)
-		==RETURN_OK)
+	  || fitsread(head=tab->headbuf,"SEXBKDEV",&backnoise,H_FLOAT,T_FLOAT) == RETURN_OK)
       if (!--ext2)
         break;
   if (j<0)
@@ -482,7 +481,8 @@ setstruct *read_samples(setstruct *set, char *filename,
     {
     key=read_key(tab, "Field Header Card");
     head = key->ptr;
-    if (fitsread(head,"SEXBKDEV",&backnoise,H_FLOAT,T_FLOAT)==RETURN_ERROR)
+    if (fitsread(head, "SEXBKDEV", &backnoise, H_FLOAT, T_FLOAT) == RETURN_ERROR &&
+        fitsread(head, "SPPBKDEV", &backnoise, H_FLOAT, T_FLOAT) == RETURN_ERROR)
       error(EXIT_FAILURE, "*Error*: Keyword not found:", "SEXBKDEV");
     }
   backnoise2 = backnoise*backnoise;
@@ -491,7 +491,8 @@ setstruct *read_samples(setstruct *set, char *filename,
     QCALLOC(set->head, char, ((n*80)/FBSIZE+1)*FBSIZE);
     memcpy(set->head, head, (n+1)*80);
     }
-  if (fitsread(head, "SEXGAIN", &gain, H_FLOAT, T_FLOAT) == RETURN_ERROR)
+  if (fitsread(head, "SEXGAIN", &gain, H_FLOAT, T_FLOAT) == RETURN_ERROR &&
+      fitsread(head, "SPPGAIN", &gain, H_FLOAT, T_FLOAT) == RETURN_ERROR)
     error(EXIT_FAILURE, "*Error*: Keyword not found:", "SEXGAIN");
 
   ext2 = ext+1;
